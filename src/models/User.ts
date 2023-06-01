@@ -10,6 +10,14 @@ const userSchema = new mongoose.Schema(
   { timestamps: { createdAt: 'created_at' } },
 );
 
-const UserModel = mongoose.model('user', userSchema);
+userSchema.set('toJSON', {
+  transform: (_document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
+
+const UserModel = mongoose.model('User', userSchema);
 
 export { UserModel };

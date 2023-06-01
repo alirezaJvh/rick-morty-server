@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const { DB_URI } = process.env;
+const { DB_URL } = process.env;
 
 const dbOptions = {
   autoIndex: false,
@@ -8,8 +8,9 @@ const dbOptions = {
 
 const connectMongo = async () => {
   try {
-    if (DB_URI) {
-      await mongoose.connect(DB_URI, dbOptions);
+    if (DB_URL) {
+      await mongoose.connect(DB_URL, dbOptions);
+      console.log('connection established');
     } else {
       throw new Error('Provide DB URL');
     }
