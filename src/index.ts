@@ -1,9 +1,12 @@
+import 'dotenv/config';
 import { createYoga } from 'graphql-yoga';
 import { createServer } from 'http';
 import { schema } from './schema';
-import 'dotenv/config';
+import { connectMongo } from './database';
 
 const { PORT } = process.env;
+
+connectMongo();
 
 const yoga = createYoga({ schema });
 const server = createServer(yoga);
