@@ -1,0 +1,9 @@
+overwrite: true
+schema: './src/schema/schema.ts'
+
+generates:
+  ./src/types.ts:
+    plugins:
+      - typescript
+    config:
+      withCompositionFunctions: true
