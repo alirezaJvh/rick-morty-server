@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 
 const mutation = {
   async loginOrCreateUser(_parent: Mutation, { data }: MutationLoginOrCreateUserArgs) {
+    console.log('call login');
     const { username } = data;
     try {
       let user = await UserModel.findOne({ username });
