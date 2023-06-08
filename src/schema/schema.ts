@@ -2,6 +2,7 @@ const typeDefinitions = /* GraphQL */ `
   type User {
     id: ID!
     username: String!
+    favourites: [Character]
   }
 
   type Query {
@@ -63,6 +64,29 @@ const typeDefinitions = /* GraphQL */ `
 
   type Mutation {
     loginOrCreateUser(data: loginOrCreateUserInput!): AuthPayload!
+    addFavourite(data: addFavouriteInput!): User!
+  }
+
+  input addFavouriteInput {
+    id: ID
+    name: String
+    image: String
+    species: String
+    status: String
+    gender: String
+    origin: LocationInput
+    episode: [EpisodeInput]
+  }
+
+  input LocationInput {
+    name: String
+    dimension: String
+  }
+
+  input EpisodeInput {
+    id: String
+    name: String
+    air_date: String
   }
 
   input loginOrCreateUserInput {
