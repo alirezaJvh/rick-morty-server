@@ -65,6 +65,11 @@ const typeDefinitions = /* GraphQL */ `
   type Mutation {
     loginOrCreateUser(data: loginOrCreateUserInput!): AuthPayload!
     addFavourite(data: addFavouriteInput!): User!
+    removeFavourite(data: removeFavouriteInput!): User!
+  }
+
+  input removeFavouriteInput {
+    id: ID
   }
 
   input addFavouriteInput {

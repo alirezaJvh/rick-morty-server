@@ -1,4 +1,9 @@
-import { Mutation, MutationLoginOrCreateUserArgs, MutationAddFavouriteArgs } from '../types';
+import {
+  Mutation,
+  MutationLoginOrCreateUserArgs,
+  MutationAddFavouriteArgs,
+  MutationRemoveFavouriteArgs,
+} from '../types';
 import { UserModel } from '../models';
 import jwt from 'jsonwebtoken';
 import { GraphQLError } from 'graphql';
@@ -38,6 +43,37 @@ const mutation = {
         });
       }
       const favourites = user.favourites.concat(data);
+      user.favourites = favourites;
+      await user.save();
+      return user;
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  async removeFavourite(
+    _parent: Mutation,
+    { data }: MutationRemoveFavouriteArgs,
+    { currentUser }: any,
+  ) {
+    try {
+      if (!currentUser) {
+        throw new GraphQLError('not authenticated', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        });
+      }
+      const { id } = currentUser;
+      const user = await UserModel.findById(id);
+      if (!user) {
+        throw new GraphQLError(`User with id ${id} not found. `, {
+          extensions: {
+            code: 'USER_NOT_FOUND',
+          },
+        });
+      }
+      const favourites = user.favourites.filter((f) => f.id !== data.id);
       user.favourites = favourites;
       await user.save();
       return user;
