@@ -3,8 +3,12 @@ import mongoose from 'mongoose';
 const userSchema = new mongoose.Schema(
   {
     username: {
-      type: 'string',
+      type: String,
       required: true,
+    },
+    favourites: {
+      type: Array,
+      require: true,
     },
   },
   { timestamps: { createdAt: 'created_at' } },
