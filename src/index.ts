@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { YogaInitialContext, createYoga } from 'graphql-yoga';
+import { createYoga } from 'graphql-yoga';
 import { createServer } from 'http';
 import { schema } from './schema';
 import { createContext } from './context';

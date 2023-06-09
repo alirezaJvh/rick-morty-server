@@ -2,6 +2,8 @@ import { GraphQLParams, YogaInitialContext } from 'graphql-yoga';
 import jwt from 'jsonwebtoken';
 import { RedisClientType } from 'redis';
 
+const { PRIVATE_KEY } = process.env;
+
 interface GraphQLContext extends YogaInitialContext {
   redisClient: RedisClientType;
   cache: any;
@@ -16,7 +18,7 @@ const checkUser = (request: Request) => {
   const auth = request ? request.headers.get('authorization') : null;
   if (auth && auth.startsWith('Bearer')) {
     const token = auth.split(' ')[1];
-    const decodedToken = jwt.verify(token, 'kYK2FZr$B8ytGy^G5T@+');
+    const decodedToken = jwt.verify(token, PRIVATE_KEY!);
     return decodedToken;
   }
 };

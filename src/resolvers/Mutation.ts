@@ -84,12 +84,13 @@ const mutation = {
 };
 
 const createToken = (id: string, username: string) => {
+  const { PRIVATE_KEY } = process.env;
   return jwt.sign(
     {
       id: id,
       username: username,
     },
-    'kYK2FZr$B8ytGy^G5T@+',
+    PRIVATE_KEY!,
   );
 };
 

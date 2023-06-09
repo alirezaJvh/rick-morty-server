@@ -1,12 +1,12 @@
-import { createClient } from 'redis';
+import { createClient, RedisClientType } from 'redis';
 
-const connectRedis = async () => {
+const connectRedis = async (): Promise<RedisClientType> => {
   const redisClient = createClient();
 
   redisClient.on('error', (error: string) => console.error(`Error : ${error}`));
   redisClient.on('ready', () => console.log('Redis is running'));
   await redisClient.connect();
-  return redisClient;
+  return redisClient as RedisClientType;
 };
 
 export { connectRedis };
