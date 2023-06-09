@@ -1,23 +1,14 @@
-import mongoose from 'mongoose';
+import { connectMongo } from './mongodb';
+import { connectRedis } from './redis';
 
-const { DB_URL } = process.env;
-
-const dbOptions = {
-  autoIndex: false,
-};
-
-const connectMongo = async () => {
+const connectDatabase = async () => {
   try {
-    if (DB_URL) {
-      await mongoose.connect(DB_URL, dbOptions);
-      console.log('connection established');
-    } else {
-      throw new Error('Provide DB URL');
-    }
+    const dbClients = await Promise.all([connectRedis(), connectMongo()]);
+    const redisClient = dbClients[0];
+    return redisClient;
   } catch (e) {
     console.log(e);
-    process.exit(1);
   }
 };
 
-export { connectMongo };
+export { connectDatabase };
