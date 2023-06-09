@@ -1,4 +1,6 @@
-import { Query, QueryCharactersArgs } from '../types';
+import { GraphQLParams } from 'graphql-yoga';
+import { RedisClientType } from 'redis';
+import { Characters, Query, QueryCharactersArgs } from '../types';
 import fetch from 'node-fetch';
 import { GraphQLContext } from '../context';
 
@@ -9,18 +11,14 @@ const query = {
     { params, cache, redisClient }: GraphQLContext,
   ) {
     console.log('call characters query');
-    const { query, variables, operationName } = params;
+    const { query, variables } = params;
     const isCache = false;
     if (cache) return cache.characters;
 
     const dataString = JSON.stringify({ query, variables });
     console.log(isCache);
     const data = await requestAPI(dataString);
-    const redisKey = `${operationName}:${params.variables?.page}`;
-    await redisClient.set(redisKey, JSON.stringify(data), {
-      EX: 600,
-      NX: true,
-    });
+    await makeCache(redisClient, data, params);
     return data.characters;
   },
 };
@@ -34,6 +32,19 @@ const requestAPI = async (body: string) => {
   });
   const { data } = await res.json();
   return data;
+};
+
+const makeCache = async (
+  redisClient: RedisClientType,
+  data: { characters: Characters },
+  params: GraphQLParams,
+) => {
+  const { operationName, variables } = params;
+  const redisKey = `${operationName}:${variables?.page}`;
+  await redisClient.set(redisKey, JSON.stringify(data), {
+    EX: 30,
+    NX: true,
+  });
 };
 
 export { query };
