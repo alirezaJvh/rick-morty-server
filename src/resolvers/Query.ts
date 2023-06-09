@@ -37,12 +37,11 @@ const requestAPI = async (body: string) => {
 const makeCache = async (
   redisClient: RedisClientType,
   data: { characters: Characters },
-  params: GraphQLParams,
+  { operationName, variables }: GraphQLParams,
 ) => {
-  const { operationName, variables } = params;
   const redisKey = `${operationName}:${variables?.page}`;
   await redisClient.set(redisKey, JSON.stringify(data), {
-    EX: 30,
+    EX: 600,
     NX: true,
   });
 };

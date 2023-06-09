@@ -7,6 +7,7 @@ import {
 import { UserModel } from '../models';
 import jwt from 'jsonwebtoken';
 import { GraphQLError } from 'graphql';
+import { GraphQLContext } from '../context';
 
 const mutation = {
   async loginOrCreateUser(_parent: Mutation, { data }: MutationLoginOrCreateUserArgs) {
@@ -24,7 +25,11 @@ const mutation = {
     }
   },
 
-  async addFavourite(_parent: Mutation, { data }: MutationAddFavouriteArgs, { currentUser }: any) {
+  async addFavourite(
+    _parent: Mutation,
+    { data }: MutationAddFavouriteArgs,
+    { currentUser }: GraphQLContext,
+  ) {
     try {
       if (!currentUser) {
         throw new GraphQLError('not authenticated', {
@@ -54,7 +59,7 @@ const mutation = {
   async removeFavourite(
     _parent: Mutation,
     { data }: MutationRemoveFavouriteArgs,
-    { currentUser }: any,
+    { currentUser }: GraphQLContext,
   ) {
     try {
       if (!currentUser) {
