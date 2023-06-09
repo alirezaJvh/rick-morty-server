@@ -1,27 +1,39 @@
 import { Query, QueryCharactersArgs } from '../types';
 import fetch from 'node-fetch';
-
-const URL = 'https://rickandmortyapi.com/graphql';
+import { GraphQLContext } from '../context';
 
 const query = {
-  async characters(_parent: Query, args: QueryCharactersArgs, context: any) {
-    const { params, cache, redisClient } = context;
+  async characters(
+    _parent: Query,
+    _args: QueryCharactersArgs,
+    { params, cache, redisClient }: GraphQLContext,
+  ) {
+    console.log('call characters query');
     const { query, variables, operationName } = params;
     const isCache = false;
     if (cache) return cache.characters;
 
     const dataString = JSON.stringify({ query, variables });
     console.log(isCache);
-    const res = await fetch(URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: dataString,
-    });
-    const { data } = await res.json();
+    const data = await requestAPI(dataString);
     const redisKey = `${operationName}:${params.variables?.page}`;
-    await redisClient.set(redisKey, JSON.stringify(data));
+    await redisClient.set(redisKey, JSON.stringify(data), {
+      EX: 600,
+      NX: true,
+    });
     return data.characters;
   },
+};
+
+const requestAPI = async (body: string) => {
+  const URL = 'https://rickandmortyapi.com/graphql';
+  const res = await fetch(URL, {
+    body,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  const { data } = await res.json();
+  return data;
 };
 
 export { query };

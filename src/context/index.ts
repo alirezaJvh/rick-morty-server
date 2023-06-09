@@ -4,6 +4,7 @@ import { RedisClientType } from 'redis';
 
 const { PRIVATE_KEY } = process.env;
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface GraphQLContext extends YogaInitialContext {
   redisClient: RedisClientType;
   cache: any;
@@ -41,4 +42,4 @@ const context =
     return { ...initicalContext, currentUser, cache, redisClient };
   };
 
-export { createContext };
+export { createContext, GraphQLContext };
