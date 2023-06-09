@@ -10,7 +10,8 @@ interface GraphQLContext extends YogaInitialContext {
   currentUser: any;
 }
 
-const createContext = (redisClient: RedisClientType) => {
+const createContext = (redisClient: RedisClientType | undefined) => {
+  if (!redisClient) throw new Error('redisClient is not provided');
   return context(redisClient);
 };
 
@@ -35,8 +36,8 @@ const context =
   (redisClient: RedisClientType) =>
   async (initicalContext: YogaInitialContext): Promise<GraphQLContext> => {
     const { request, params } = initicalContext;
-    const cache: any = await checkCache(params, redisClient);
-    const currentUser: any = checkUser(request);
+    const cache = await checkCache(params, redisClient);
+    const currentUser = checkUser(request);
     return { ...initicalContext, currentUser, cache, redisClient };
   };
 
